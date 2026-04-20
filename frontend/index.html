@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Boxicons for lightweight iconography -->
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- ================================================================
+         TOAST NOTIFICATION
+    ================================================================ -->
+    <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
+    <!-- ================================================================
+         AUTH SECTION  (shown when logged-out)
+    ================================================================ -->
+    <section id="auth-section" class="auth-wrapper">
+      <div class="auth-card">
+        <!-- Brand -->
+        <div class="brand">
+          <i class="bx bx-task brand-icon"></i>
+          <h1 class="brand-name">TaskFlow</h1>
+          <p class="brand-sub">Stay organised, stay ahead.</p>
+        </div>
+
+        <!-- Tab switcher -->
+        <div class="tab-switcher" role="tablist">
+          <button
+            id="tab-login"
+            class="tab-btn active"
+            role="tab"
+            aria-selected="true"
+            aria-controls="panel-login"
+            onclick="switchTab('login')"
+          >
+            Login
+          </button>
+          <button
+            id="tab-register"
+            class="tab-btn"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-register"
+            onclick="switchTab('register')"
+          >
+            Register
+          </button>
+        </div>
+
+        <!-- LOGIN PANEL -->
+        <div id="panel-login" class="tab-panel" role="tabpanel">
+          <div class="form-group">
+            <label for="login-username">Username</label>
+            <div class="input-wrap">
+              <i class="bx bx-user"></i>
+              <input
+                id="login-username"
+                type="text"
+                placeholder="Enter your username"
+                autocomplete="username"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <div class="input-wrap">
+              <i class="bx bx-lock-alt"></i>
+              <input
+                id="login-password"
+                type="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+              />
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-full" onclick="login()">
+            <i class="bx bx-log-in-circle"></i> Login
+          </button>
+        </div>
+
+        <!-- REGISTER PANEL -->
+        <div id="panel-register" class="tab-panel hidden" role="tabpanel">
+          <div class="form-group">
+            <label for="reg-username">Username</label>
+            <div class="input-wrap">
+              <i class="bx bx-user"></i>
+              <input
+                id="reg-username"
+                type="text"
+                placeholder="Choose a username"
+                autocomplete="username"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-email">Email</label>
+            <div class="input-wrap">
+              <i class="bx bx-envelope"></i>
+              <input
+                id="reg-email"
+                type="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-password">Password</label>
+            <div class="input-wrap">
+              <i class="bx bx-lock-alt"></i>
+              <input
+                id="reg-password"
+                type="password"
+                placeholder="Min 8 chars, 1 uppercase, 1 digit"
+                autocomplete="new-password"
+              />
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-full" onclick="register()">
+            <i class="bx bx-user-plus"></i> Create Account
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         APP SECTION  (shown when logged-in)
+    ================================================================ -->
+    <section id="app-section" class="hidden">
+
+      <!-- TOP NAV -->
+      <nav class="navbar">
+        <div class="nav-brand">
+          <i class="bx bx-task"></i>
+          <span>TaskFlow</span>
+        </div>
+        <div class="nav-right">
+          <span id="nav-username" class="nav-user"></span>
+          <button class="btn btn-ghost btn-sm" onclick="logout()">
+            <i class="bx bx-log-out"></i> Logout
+          </button>
+        </div>
+      </nav>
+
+      <main class="app-layout">
+
+        <!-- ── LEFT PANEL : Create Task ── -->
+        <aside class="panel panel-create">
+          <h2 class="panel-title">
+            <i class="bx bx-plus-circle"></i> New Task
+          </h2>
+
+          <div class="form-group">
+            <label for="task-title">Title <span class="required">*</span></label>
+            <input
+              id="task-title"
+              type="text"
+              placeholder="What needs to be done?"
+              maxlength="200"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="task-desc">Description</label>
+            <textarea
+              id="task-desc"
+              rows="3"
+              placeholder="Optional details…"
+              maxlength="2000"
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="task-priority">Priority</label>
+              <select id="task-priority">
+                <option value="low">🟢 Low</option>
+                <option value="medium" selected>🟡 Medium</option>
+                <option value="high">🔴 High</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="task-due">Due Date</label>
+              <input id="task-due" type="datetime-local" />
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-full" onclick="createTask()">
+            <i class="bx bx-send"></i> Add Task
+          </button>
+        </aside>
+
+        <!-- ── RIGHT PANEL : Task List ── -->
+        <div class="panel panel-list">
+          <div class="list-header">
+            <h2 class="panel-title">
+              <i class="bx bx-list-ul"></i> My Tasks
+            </h2>
+
+            <!-- Filters -->
+            <div class="filters">
+              <select id="filter-completed" onchange="applyFilters()">
+                <option value="">All</option>
+                <option value="false">Pending</option>
+                <option value="true">Completed</option>
+              </select>
+
+              <select id="filter-priority" onchange="applyFilters()">
+                <option value="">Any Priority</option>
+                <option value="low">🟢 Low</option>
+                <option value="medium">🟡 Medium</option>
+                <option value="high">🔴 High</option>
+              </select>
+
+              <div class="search-wrap">
+                <i class="bx bx-search"></i>
+                <input
+                  id="filter-search"
+                  type="text"
+                  placeholder="Search tasks…"
+                  oninput="applyFilters()"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats bar -->
+          <div class="stats-bar">
+            <span id="stat-total" class="stat">— total</span>
+            <span id="stat-pending" class="stat stat-pending">— pending</span>
+            <span id="stat-done" class="stat stat-done">— done</span>
+          </div>
+
+          <!-- Task list -->
+          <div id="task-list" class="task-list">
+            <div class="empty-state">
+              <i class="bx bx-inbox"></i>
+              <p>No tasks yet. Create one!</p>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div id="pagination" class="pagination"></div>
+        </div>
+      </main>
+    </section>
+
+    <!-- ================================================================
+         EDIT MODAL
+    ================================================================ -->
+    <div id="edit-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="modal-title">Edit Task</h3>
+          <button class="btn-icon" onclick="closeModal()" aria-label="Close">
+            <i class="bx bx-x"></i>
+          </button>
+        </div>
+
+        <input type="hidden" id="edit-task-id" />
+
+        <div class="form-group">
+          <label for="edit-title">Title <span class="required">*</span></label>
+          <input id="edit-title" type="text" maxlength="200" />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-desc">Description</label>
+          <textarea id="edit-desc" rows="3" maxlength="2000"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-priority">Priority</label>
+            <select id="edit-priority">
+              <option value="low">🟢 Low</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="high">🔴 High</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-due">Due Date</label>
+            <input id="edit-due" type="datetime-local" />
+          </div>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input id="edit-completed" type="checkbox" />
+            <span>Mark as completed</span>
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveEdit()">
+            <i class="bx bx-save"></i> Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
