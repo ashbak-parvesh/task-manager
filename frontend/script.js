@@ -1,7 +1,7 @@
 /* ============================================================
    CONFIG
    ============================================================ */
-const API = "http://127.0.0.1:8000";          // Same origin – FastAPI serves the frontend
+const API = "https://task-manager-api-pj2a.onrender.com";          // Same origin – FastAPI serves the frontend
 const PAGE_SIZE = 10;
 
 /* ============================================================
