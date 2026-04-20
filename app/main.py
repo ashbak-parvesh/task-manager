@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import os
 
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +12,7 @@ from app.routes import task, user
 
 
 # ---------------------------
-# CREATE TABLES (ASYNC FIX)
+# CREATE TABLES
 # ---------------------------
 async def init_db():
     async with engine.begin() as conn:
@@ -45,7 +46,7 @@ def create_app() -> FastAPI:
     # ---------------------------
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.ALLOWED_ORIGINS,
+        allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -59,25 +60,16 @@ def create_app() -> FastAPI:
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={
-                "detail": "Internal server error",
+                "detail": str(exc),
                 "path": str(request.url),
             },
         )
 
     # ---------------------------
-    # ROUTES
+    # API ROUTES
     # ---------------------------
     app.include_router(user.router)
     app.include_router(task.router)
-
-    # ---------------------------
-    # FRONTEND
-    # ---------------------------
-    app.mount(
-        "/",
-        StaticFiles(directory="frontend", html=True),
-        name="frontend",
-    )
 
     # ---------------------------
     # HEALTH CHECK
@@ -89,6 +81,16 @@ def create_app() -> FastAPI:
             "app": settings.APP_NAME,
             "version": settings.APP_VERSION,
         }
+
+    # ---------------------------
+    # FRONTEND STATIC FILES
+    # ---------------------------
+    if os.path.exists("frontend"):
+        app.mount(
+            "/",
+            StaticFiles(directory="frontend", html=True),
+            name="frontend",
+        )
 
     return app
 
