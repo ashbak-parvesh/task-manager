@@ -27,3 +27,12 @@ httpx==0.27.0
 # Dev / Linting (optional but professional)
 black==24.4.2
 ruff==0.4.4
+fastapi==0.111.0
+uvicorn==0.29.0
+sqlalchemy==2.0.30
+aiosqlite==0.20.0
+pydantic==2.7.1
+python-multipart==0.0.9
+passlib[bcrypt]
+python-jose[cryptography]
+email-validator
